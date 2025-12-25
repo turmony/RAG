@@ -1,0 +1,86 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3307/rag_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: rag_user
+    password: rag_pass
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+
+  redis:
+    host: localhost
+    port: 6380
+
+milvus:
+  host: localhost
+  port: 19530
+
+ollama:
+  base-url: http://localhost:11434
+  model: qwen2.5:14b
+  embedding-model: bge-m3
+
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+
+logging:
+  level:
+    com.rag.platform: DEBUG
+    org.springframework.security: DEBUG
+
+# Actuator configuration for health checks
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+
+# Security configuration (will be configured later)
+security:
+  jwt:
+    secret: rag-platform-secret-key-for-jwt-tokens-2024
+    expiration: 86400000  # 24 hours in milliseconds
+
+---
+# Test profile configuration (uses H2 in-memory database)
+spring:
+  config:
+    activate:
+      on-profile: test
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    database-platform: org.hibernate.dialect.H2Dialect
+  h2:
+    console:
+      enabled: true
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always

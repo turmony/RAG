@@ -1,0 +1,20 @@
+# 中间件运行时日志文件 - 这些文件在重启后会重新生成
+
+# etcd WAL日志和临时文件
+volumes/etcd/member/wal/*.wal
+volumes/etcd/member/wal/*.tmp
+
+# RocksDB WAL日志文件
+volumes/milvus/rdb_data/*.log
+volumes/milvus/rdb_data_meta_kv/*.log
+
+# RocksDB旧日志文件
+volumes/milvus/rdb_data/*.old.*
+volumes/milvus/rdb_data_meta_kv/*.old.*
+
+# 注意：以下重要文件不会被忽略
+# - volumes/etcd/member/snap/db (etcd快照数据)
+# - volumes/milvus/rdb_data/*.sst (RocksDB数据文件)
+# - volumes/milvus/rdb_data/CURRENT, IDENTITY, LOCK, MANIFEST-* (RocksDB元数据)
+# - volumes/milvus/rdb_data/OPTIONS-* (RocksDB配置)
+# - volumes/minio/* (MinIO存储数据)
